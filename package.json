@@ -1,0 +1,27 @@
+{
+  "name": "ambjs",
+  "version": "1.0.0",
+  "description": "amb(iguous) operator in javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "macros",
+    "macro",
+    "sweetjs",
+    "sweet-macros",
+    "amb"
+  ],
+  "author": "francesco bracchi",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "gulp-clean": "^0.3.1",
+    "gulp-istanbul": "^0.3.1",
+    "gulp-mocha": "^1.1.1",
+    "gulp-sweetjs": "^0.5.4",
+    "mocha": "^1.21.5",
+    "sweet.js": "^0.7.1"
+  }
+}
