@@ -5,6 +5,7 @@ var gulp = require('gulp'),
     clean = require('gulp-clean'),
     istanbul = require('gulp-istanbul'),
     mocha = require('gulp-mocha'),
+    docco = require('gulp-docco'),
     build = 'build';
 
 gulp.task('clean', function () {
@@ -38,4 +39,11 @@ gulp.task('test', ['sweet'], function () {
     });
 });
 
-gulp.task('default', ['test']);
+gulp.task('docco', function () {
+  return gulp
+    .src(['src/lib/**/*.js', 'src/lib/**/*.sjs'])
+    .pipe(docco())
+    .pipe(gulp.dest(build + '/doc'));
+});
+
+gulp.task('default', ['test', 'docco']);

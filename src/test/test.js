@@ -3,7 +3,9 @@ var assert = require('assert'),
     amb = require('../lib/amb'),
     foreach = require('../lib/foreach'),
     ambAssert = require('../lib/assert'),
-    callcc = require('../lib/callcc');
+    callcc = require('../lib/callcc'),
+    ambGen = require('../lib/amb-generator'),
+    async = require('../lib/async');
 
 var any = function () {
   return [
@@ -35,6 +37,16 @@ var sets = function () {
     [1,2,3],
     [{key: 'value'}, undefined]
   ];
+};
+
+var integers = function (n, m) {
+  if (n === undefined) n = 10;
+  if (m === undefined) m = 100;
+  var r = new Array (n);
+  while (n--) {
+    r[n] = Math.round(Math.random(m));
+  }
+  return r;
 };
 
 describe('Return', function () {
@@ -189,24 +201,123 @@ describe('example', function () {
   });
 });
 
-// describe('CallCC', function () {
-//   it('is', function (done) {
-//     callcc(function(exit) {
-//       console.log('exit');
-//       return fa {
-//         var t0 = ret((new Date()).getTime());
-//         ret(console.log('1'));
-//         var t = callcc(function (resume) {
-//           console.log ('resume');
-//           setTimeout (function () {
-//             console.log('timeout');
-//             resume(ret ((new Date()).getTime()));
-//           }, 600);
-//           return exit(ret('exit-exit'));
-//         });
-//         ret(console.log('diff:' + (t - t0)));
-//         ret(done());
-//       };
-//     }).run();
-//   });
-// });
+describe ('Generator', function () {
+  var integerGen = function () {
+    var j = 0;
+    return function () {
+      return j++;
+    };
+  };
+  
+  var arrayToGenerator = function (array) {
+    var j = 0;
+    return function () {
+      return array[j++];
+    };
+  };
+
+  it ('should generate', function () {
+    assert(ambGen(integerGen()).run().value === 0);
+  });
+  it ('should generate more', function () {
+    assert(ambGen(integerGen()).run().next().value === 1);
+  });
+
+  it ('should fail if generator returns undefined', function () {
+    try {
+      var v = ambGen(arrayToGenerator([0,1,2])).run();
+      while (v.next)
+        v = v.next();
+      assert(false);
+    } catch(e) {
+      assert(e.message === 'Impossible!');
+    }
+  });
+
+  it ('should not fail if generator returns null ', function () {
+    assert(ambGen(arrayToGenerator([null])).run().value === null);
+  });
+  it ('should not fail if generator returns 0 ', function () {
+    assert(ambGen(arrayToGenerator([0])).run().value === 0);
+  });
+  
+  it ('should never fail if generator does not return undefined', function () {
+    integers().forEach(function (limit) {
+      var v = ambGen(integerGen()).run();
+      var j = 0;
+      while (v.next && j < limit) {
+        v = v.next();
+        j++;
+      }
+      assert(true);
+    });
+  });
+});
+
+describe ('Async', function () {
+  var now = function () {
+    return (new Date()).getTime();
+  };
+
+  it ('should suspend until timeout fires', function (done) {
+    fa {
+      var delta = ret(400);
+      var t0 = ret(now());
+      var t = async (function (resume) {
+        setTimeout(function () { 
+          resume (now());
+        }, delta);
+      });
+      ret(assert(t - t0 >= delta));
+      ret(done());
+    }.run();
+  });
+});
+
+describe('CallCC', function () {
+  var now = function () {
+    return (new Date()).getTime();
+  };
+  it('should not evaluate expressions after exit', function () {
+    callcc(function(exit) {
+      return fa {
+        var t0 = ret(now());
+        exit('exit');
+        ret(assert(false));
+      };
+    }).run();
+  });
+  it('should return a value if exit is not called', function () {
+    assert(callcc(function(exit) {
+      return ret ('value');
+    }).run().value === 'value');
+  });
+  it('should evaluate expressions after callcc', function () {
+    fa {
+      var v = callcc(function(exit) {
+        return fa {
+          var t0 = ret(now());
+          exit('exit');
+          ret(assert(false));
+        };
+      });
+      ret(assert(v === 'exit'));
+    }.run();
+  });
+  it('should behave like async', function (done) {
+    var timeout = 200;
+    callcc(function(exit) {
+      return fa {
+        var t0 = ret(now());
+        var t = callcc(function (resume) {
+          setTimeout(function () {
+            resume(now()).run();
+          }, timeout);
+          return exit('exit');
+        });
+        ret(assert(t - t0 >= timeout));
+        ret(done());
+      }
+    }).run();
+  });
+});
