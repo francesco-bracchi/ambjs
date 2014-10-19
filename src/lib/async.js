@@ -9,7 +9,7 @@ var expr = require('./expression'),
  
  // ### Example
 
- //     fa {
+ //     ambBlock {
  //         var t = async (function (resume) {
  //         setTimeout(function () { 
  //           resume ('resumed');

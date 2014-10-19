@@ -1,4 +1,4 @@
-macro fa {
+macro ambBlock {
   rule {
     { $e:expr ; }
   } => {
@@ -7,13 +7,13 @@ macro fa {
   rule {
     { var $a:ident = $e:expr ; $es ... }
   } => {
-    ( $e ) . bind ( function ( $a ) { return fa { $es ... } ; } )
+    ( $e ) . bind ( function ( $a ) { return ambBlock { $es ... } ; } )
   }
   rule {
     { $e:expr ; $es ... }
   } => { 
-    ( $e ) . bind ( function () { return fa { $es ... } ;  } ) 
+    ( $e ) . bind ( function () { return ambBlock { $es ... } ;  } ) 
   }
 }
 
-export fa;
+export ambBlock;

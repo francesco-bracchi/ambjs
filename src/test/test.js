@@ -159,7 +159,7 @@ describe ('Foreach', function () {
 describe('example', function () {
   it ('should not fail', function () {
     var colors = ['red', 'green', 'yellow', 'blue'];
-    var colorSet = fa {
+    var colorSet = ambBlock {
       var germany = amb(colors);
       var france = amb(colors);
       var italy = amb(colors);
@@ -260,7 +260,7 @@ describe ('Async', function () {
   };
 
   it ('should suspend until timeout fires', function (done) {
-    fa {
+    ambBlock {
       var delta = ret(400);
       var t0 = ret(now());
       var t = async (function (resume) {
@@ -280,7 +280,7 @@ describe('CallCC', function () {
   };
   it('should not evaluate expressions after exit', function () {
     callcc(function(exit) {
-      return fa {
+      return ambBlock {
         var t0 = ret(now());
         exit('exit');
         ret(assert(false));
@@ -293,9 +293,9 @@ describe('CallCC', function () {
     }).run().value === 'value');
   });
   it('should evaluate expressions after callcc', function () {
-    fa {
+    ambBlock {
       var v = callcc(function(exit) {
-        return fa {
+        return ambBlock {
           var t0 = ret(now());
           exit('exit');
           ret(assert(false));
@@ -307,7 +307,7 @@ describe('CallCC', function () {
   it('should behave like async', function (done) {
     var timeout = 200;
     callcc(function(exit) {
-      return fa {
+      return ambBlock {
         var t0 = ret(now());
         var t = callcc(function (resume) {
           setTimeout(function () {

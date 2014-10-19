@@ -2,7 +2,7 @@ var ret = require('./ret');
 
 var foreach = function (arr, fn) {
   var loop = function (j) {
-    return j < arr.length ? fa {
+    return j < arr.length ? ambBlock {
       fn (arr[j]);
       loop(j+1);
     } : ret();

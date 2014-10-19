@@ -1,10 +1,10 @@
 {
   "name": "ambjs",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "amb(iguous) operator in javascript",
-  "main": "index.js",
+  "repository": "git@github.com:francesco-bracchi/ambjs.git",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "make test"
   },
   "keywords": [
     "macros",
@@ -23,6 +23,9 @@
     "gulp-mocha": "^1.1.1",
     "gulp-sweetjs": "^0.5.4",
     "mocha": "^1.21.5",
+    "sweet.js": "^0.7.1"
+  },
+  "dependencies": {
     "sweet.js": "^0.7.1"
   }
 }
