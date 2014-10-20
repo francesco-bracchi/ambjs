@@ -2,14 +2,18 @@ var expr = require('./expression'),
     trampoline = require ('./trampoline');
 
 var ambSet = function (values) {
-  return expr(function (succ, fail) {
+  return expr(function (succ, fail, ff) {
     return trampoline(function () {
       var next = function (j) {
-        return j < values.length ? succ (values[j], function () {
-          return next(j+1);
-        }) : fail();
+        var t = ff === undefined,
+            l = j < values.length;
+        return (t && l) || (l && j < ff)
+          ? succ (values[j], function () {
+            return next(j + 1);
+          }, t ? undefined : ff - 1)
+          : fail();
       };
-      return values ? next(0) : fail();
+      return values === undefined ? fail() : next(0);
     });
   });
 };
@@ -23,13 +27,19 @@ EndObject.prototype.toString = function () {
 var end_object = new EndObject();
 
 var ambGenerator = function (gen) {
-  return expr(function (succ, fail) {
+  return expr(function (succ, fail, ff) {
     return trampoline(function () {
-      var next = function () {
-        var val = gen();
-        return val instanceof EndObject ? fail () : succ (val, next);
+      var next = function (j) {
+        var val = gen(),
+            t = ff === undefined,
+            l = !(val instanceof EndObject);
+        return (t && l) || (l && j < ff)
+          ? succ (val, function () { 
+            return next(j + 1); 
+          }, t ? undefined : ff - 1)
+        : fail();
       };
-      return next();
+      return next(0);
     });
   });
 };

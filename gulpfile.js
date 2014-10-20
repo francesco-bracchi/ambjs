@@ -24,7 +24,8 @@ gulp.task('sweet', ['macros'], function () {
   return gulp
     .src(['src/**/*.js'])
     .pipe(sweet({
-      modules: ['./build/lib/macros']
+      modules: ['./build/lib/macros'],
+      sourceMap: true
     }))
     .pipe(gulp.dest(build));
 });

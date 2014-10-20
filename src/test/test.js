@@ -323,3 +323,26 @@ describe('CallCC', function () {
     }).run();
   });
 });
+
+describe ('Ids', function () {
+  var integerGen = function () {
+    var j = 0;
+    return function () {
+      return j++;
+    };
+  };
+  it('should return', function () {
+    amb(integerGen()).bind(function (i) {
+      return amb(integerGen()).bind(function (j) {
+        return ambAssert (i + j > 100);
+      });
+    }).run(true);
+  });
+  it('should return', function () {
+    amb([1,2,3]).bind(function (i) {
+      return amb([4,5,6]).bind(function (j) {
+        return ambAssert (i * j >= 18);
+      });
+    }).run(1);
+  });
+});
