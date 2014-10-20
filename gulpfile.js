@@ -23,7 +23,9 @@ gulp.task('macros', function () {
 gulp.task('sweet', ['macros'], function () {
   return gulp
     .src(['src/**/*.js'])
-    .pipe(sweet({modules: ['./build/lib/macros']}))
+    .pipe(sweet({
+      modules: ['./build/lib/macros']
+    }))
     .pipe(gulp.dest(build));
 });
 
@@ -31,7 +33,10 @@ gulp.task('test', ['sweet'], function () {
   return gulp.src([build + '/lib/**/*.js'])
     .pipe(istanbul())
     .on('finish', function () {
-      gulp.src('build/test/test.js', {read: false})
+      gulp
+        .src('build/test/test.js', {
+          read: false
+        })
         .pipe(mocha({
           reporter: 'nyan'
         }))
