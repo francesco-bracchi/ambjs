@@ -4,7 +4,6 @@ var assert = require('assert'),
     foreach = require('../lib/foreach'),
     ambAssert = require('../lib/assert'),
     callcc = require('../lib/callcc'),
-    ambGen = require('../lib/amb-generator'),
     async = require('../lib/async');
 
 var any = function () {
@@ -212,20 +211,23 @@ describe ('Generator', function () {
   var arrayToGenerator = function (array) {
     var j = 0;
     return function () {
-      return array[j++];
+      return j < array.length ? array[j++] : amb.end_object;
     };
   };
 
+  it ('should print #end_object', function () {
+    assert(amb.end_object.toString() === '#end_object');
+  });
   it ('should generate', function () {
-    assert(ambGen(integerGen()).run().value === 0);
+    assert(amb(integerGen()).run().value === 0);
   });
   it ('should generate more', function () {
-    assert(ambGen(integerGen()).run().next().value === 1);
+    assert(amb(integerGen()).run().next().value === 1);
   });
 
   it ('should fail if generator returns undefined', function () {
     try {
-      var v = ambGen(arrayToGenerator([0,1,2])).run();
+      var v = amb(arrayToGenerator([0,1,2])).run();
       while (v.next)
         v = v.next();
       assert(false);
@@ -235,15 +237,15 @@ describe ('Generator', function () {
   });
 
   it ('should not fail if generator returns null ', function () {
-    assert(ambGen(arrayToGenerator([null])).run().value === null);
+    assert(amb(arrayToGenerator([null])).run().value === null);
   });
   it ('should not fail if generator returns 0 ', function () {
-    assert(ambGen(arrayToGenerator([0])).run().value === 0);
+    assert(amb(arrayToGenerator([0])).run().value === 0);
   });
   
   it ('should never fail if generator does not return undefined', function () {
     integers().forEach(function (limit) {
-      var v = ambGen(integerGen()).run();
+      var v = amb(integerGen()).run();
       var j = 0;
       while (v.next && j < limit) {
         v = v.next();
