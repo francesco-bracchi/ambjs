@@ -4,24 +4,50 @@ var Expression = function (fn) {
   this.eval = fn;
 };
 
-var succ = function (v, fail, ff) {
+var succ = function (v, fail) {
   return {
     value: v,
     next: fail
   };
 };
 
-var factor = 2;
+var fail = function () {
+  throw new Error('Impossible!');
+};
 
-Expression.prototype.run = function (ids) {
-  if (ids == true) ids = 32;
-  var e = this, 
+var default_options = {
+  ids: false,
+  increment: 2,
+  limit: 32,
+  succ: succ,
+  fail: fail
+};
+
+var merge = function (as) {
+  var result = {};
+  as.forEach(function (a) {
+    if (a) 
+      for (var j in a) 
+        result[j] = a[j];
+  });
+  return result;
+};
+
+Expression.prototype.run = function (opts) {
+  var options = merge([default_options, opts]),
+      self = this,
+      ids = options.ids,
+      limit = options.limit,
+      increment = options.increment,
+      succ = function (v, fail, ff) {
+        return options.succ (v, fail);
+      },
       fail = function () {
-        if (ids === undefined) 
-          throw new Error('Impossible!');
-        return e.eval(succ, fail, Math.round(factor*ids)).run();
+        if (! ids) return options.fail();
+        limit += increment;
+        return self.eval(succ, fail, limit).run();
       };
-  return this.eval(succ, fail, ids).run();
+  return this.eval(succ, fail, ids ? limit : undefined).run();
 };
 
 var bind = function (e, next) {
