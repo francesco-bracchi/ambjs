@@ -2,16 +2,18 @@
 
 var gulp = require('gulp'),
     sweet = require('gulp-sweetjs'),
-    clean = require('gulp-clean'),
     istanbul = require('gulp-istanbul'),
     mocha = require('gulp-mocha'),
     docco = require('gulp-docco'),
+    del = require('del'),
     build = 'build';
 
-gulp.task('clean', function () {
-  return gulp
-    .src([build], {read: false})
-    .pipe(clean());
+gulp.task('clean', function (done) {
+  del([build, 'coverage'], done);
+});
+
+gulp.task('distclean', ['clean'], function(done) {
+  del(['node_modules'], done);
 });
 
 gulp.task('macros', function () {
@@ -20,7 +22,7 @@ gulp.task('macros', function () {
     .pipe(gulp.dest(build));
 });
 
-gulp.task('sweet', ['macros'], function () {
+gulp.task('expand', ['macros'], function () {
   return gulp
     .src(['src/**/*.js'])
     .pipe(sweet({
@@ -30,7 +32,7 @@ gulp.task('sweet', ['macros'], function () {
     .pipe(gulp.dest(build));
 });
 
-gulp.task('test', ['sweet'], function () {
+gulp.task('test', ['expand'], function () {
   return gulp.src([build + '/lib/**/*.js'])
     .pipe(istanbul())
     .on('finish', function () {
@@ -52,4 +54,13 @@ gulp.task('docco', function () {
     .pipe(gulp.dest(build + '/doc'));
 });
 
-gulp.task('default', ['test', 'docco']);
+gulp.task('lib', ['expand'], function () {
+  return gulp
+  .src('package.json')
+  .pipe(gulp.dest(build + '/lib'));
+});
+
+gulp.task('doc', ['docco']);
+
+
+gulp.task('default', ['lib', 'test', 'doc']);

@@ -16,13 +16,12 @@
   "author": "francesco bracchi",
   "license": "ISC",
   "devDependencies": {
+    "del": "^0.1.3",
     "gulp": "^3.8.8",
-    "gulp-clean": "^0.3.1",
     "gulp-docco": "0.0.4",
     "gulp-istanbul": "^0.3.1",
     "gulp-mocha": "^1.1.1",
     "gulp-sweetjs": "^0.5.4",
-    "mocha": "^1.21.5",
     "sweet.js": "^0.7.1"
   },
   "dependencies": {

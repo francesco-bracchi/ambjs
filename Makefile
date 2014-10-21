@@ -12,6 +12,11 @@ gulp: update
 clean: update
 	$(GULP) clean
 
+distclean: update
+	$(GULP) distclean
+
+doc: update
+	$(GULP) doc
+
 publish: gulp
-	@cp package.json build/lib/package.json
 	$(NPM) publish build/lib
