@@ -4,7 +4,8 @@ var assert = require('assert'),
     foreach = require('../lib/foreach'),
     ambAssert = require('../lib/assert'),
     callcc = require('../lib/callcc'),
-    async = require('../lib/async');
+    async = require('../lib/async'),
+    map = require('../lib/map');
 
 var any = function () {
   return [
@@ -225,7 +226,7 @@ describe ('Generator', function () {
     assert(amb(integerGen()).run().next().value === 1);
   });
 
-  it ('should fail if generator returns undefined', function () {
+  it ('should fail if generator returns end', function () {
     try {
       var v = amb(arrayToGenerator([0,1,2])).run();
       while (v.next)
@@ -334,15 +335,42 @@ describe ('Ids', function () {
   it('should return', function () {
     amb(integerGen()).bind(function (i) {
       return amb(integerGen()).bind(function (j) {
-        return ambAssert (i + j > 100);
+        return ambAssert (i > 10);
       });
-    }).run(true);
+    }).run({ids: true});
   });
-  it('should return', function () {
-    amb([1,2,3]).bind(function (i) {
-      return amb([4,5,6]).bind(function (j) {
-        return ambAssert (i * j >= 18);
+  it('should iterate ', function () {
+    amb([1,2,3,4]).bind(function (i) {
+      return amb([5,6,7,8]).bind(function (j) {
+        return ambAssert (i * j >= 32);
       });
-    }).run(1);
+    }).run({ids: true, limit: 2, factor: 2});
+  });
+});
+
+describe('Map', function () {
+  var range = function (j) {
+    var res = new Array(j);
+    while(j--) res[j] = j;
+    return res;
+  };
+  it('should return values', function () {
+    ambBlock {
+      var is = map(function (j) {
+        return amb (range(j));
+      }, [3,4,5]);
+      ambAssert(is[2] >= 4);
+      ret(assert(is[2] === 4));
+    }.run();
+  });
+
+  it('should zip multiple arrays', function () {
+    ambBlock {
+      var is = map(function (i,j) {
+        return amb([i,j]);
+      }, [0,1,2,3], ['a','b','c']);
+      ambAssert(is[3] === undefined);
+      ret(assert(is[3] === undefined));
+    }.run();
   });
 });

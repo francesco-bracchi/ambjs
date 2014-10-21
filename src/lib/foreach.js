@@ -7,7 +7,7 @@ var foreach = function (arr, fn) {
       loop(j+1);
     } : ret();
   };
-  return loop (0);
+  return loop(0);
 };
 
 module.exports = foreach;
