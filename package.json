@@ -1,6 +1,6 @@
 {
   "name": "ambjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "amb(iguous) operator in javascript",
   "repository": "git@github.com:francesco-bracchi/ambjs.git",
   "scripts": {

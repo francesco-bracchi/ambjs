@@ -20,3 +20,6 @@ doc: update
 
 publish: gulp
 	$(NPM) publish build/lib
+
+test: update
+	$(GULP) test	
