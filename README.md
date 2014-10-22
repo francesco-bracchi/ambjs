@@ -60,5 +60,5 @@ this is taken from the test suite
 
 to have the javascript code apply the provided macro.
 
-    node_modules/.bin/sjs --module asmjs/macro <file> 
+    node_modules/.bin/sjs --module ambjs/macro <file> 
 

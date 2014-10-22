@@ -4,16 +4,15 @@ var gulp = require('gulp'),
     sweet = require('gulp-sweetjs'),
     istanbul = require('gulp-istanbul'),
     mocha = require('gulp-mocha'),
-    docco = require('gulp-docco'),
     del = require('del'),
     build = 'build';
 
 gulp.task('clean', function (done) {
-  del([build, 'coverage'], done);
+  del([build], done);
 });
 
 gulp.task('distclean', ['clean'], function(done) {
-  del(['node_modules'], done);
+  del(['node_modules','**/*~'], done);
 });
 
 gulp.task('macros', function () {
@@ -43,24 +42,16 @@ gulp.task('test', ['expand'], function () {
         .pipe(mocha({
           reporter: 'nyan'
         }))
-        .pipe(istanbul.writeReports());
+        .pipe(istanbul.writeReports({
+          dir: build + '/coverage'
+        }));
     });
-});
-
-gulp.task('docco', function () {
-  return gulp
-    .src(['src/lib/**/*.js', 'src/lib/**/*.sjs'])
-    .pipe(docco())
-    .pipe(gulp.dest(build + '/doc'));
 });
 
 gulp.task('lib', ['expand'], function () {
   return gulp
-  .src('package.json')
-  .pipe(gulp.dest(build + '/lib'));
+  .src(['package.json', 'README.md'])
+    .pipe(gulp.dest(build + '/lib'));
 });
 
-gulp.task('doc', ['docco']);
-
-
-gulp.task('default', ['lib', 'test', 'doc']);
+gulp.task('default', ['lib', 'test']);
