@@ -1,4 +1,6 @@
-# ambjs
+# Ambjs
+
+[![Build Status](https://travis-ci.org/francesco-bracchi/ambjs.svg?branch=master)](https://travis-ci.org/francesco-bracchi/ambjs)
 
 the amb operator is an operator that assigns a value to a variable
 in an ambigous way, i.e.
