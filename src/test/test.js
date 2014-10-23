@@ -264,7 +264,7 @@ describe ('Async', function () {
 
   it ('should suspend until timeout fires', function (done) {
     ambBlock {
-      var delta = ret(400);
+      var delta = ret(10);
       var t0 = ret(now());
       var t = async (function (resume) {
         setTimeout(function () { 
@@ -308,7 +308,7 @@ describe('CallCC', function () {
     }.run();
   });
   it('should behave like async', function (done) {
-    var timeout = 200;
+    var timeout = 10;
     callcc(function(exit) {
       return ambBlock {
         var t0 = ret(now());
