@@ -1,3 +1,7 @@
+// -*- mode: js -*-
+
+"use strict";
+
 var Trampoline = function (fn) {
   this.tick = fn;
 };

@@ -1,3 +1,7 @@
+// -*- mode: js -*-
+
+"use strict";
+
 var ret = require('./ret');
 
 var foreach = function (arr, fn) {

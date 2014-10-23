@@ -1,3 +1,6 @@
+// -*- mode: js -*-
+"use strict";
+
 var assert = require('assert'),
     ret = require('../lib/ret'),
     amb = require('../lib/amb'),

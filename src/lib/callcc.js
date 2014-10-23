@@ -1,3 +1,6 @@
+// -*- mode: js -*-
+"use strict";
+
 var trampoline = require('./trampoline'),
     expr = require('./expression');
 

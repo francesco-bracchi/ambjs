@@ -1,3 +1,7 @@
+// -*- mode: js -*-
+
+"use strict";
+
 var amb = require('./amb'),
     ret = require ('./ret');
 
