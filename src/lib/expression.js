@@ -3,10 +3,6 @@
 
 var trampoline = require ('./trampoline');
 
-var Expression = function (fn) { 
-  this.eval = fn;
-};
-
 var succ = function (v, fail) {
   return {
     value: v,
@@ -36,7 +32,9 @@ var merge = function (as) {
   return result;
 };
 
-Expression.prototype.run = function (opts) {
+var proto = {};
+
+proto.run = function (opts) {
   var options = merge([default_options, opts]),
       self = this,
       ids = options.ids,
@@ -63,12 +61,14 @@ var bind = function (e, next) {
   });
 };
 
-Expression.prototype.bind = function (next) {
+proto.bind = function (next) {
   return bind (this, next);
 };
 
 var expression = function (fn) {
-  return new Expression (fn);
+  var result = Object.create (proto);
+  result.eval = fn;
+  return result;
 };
 
 module.exports = expression;

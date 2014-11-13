@@ -2,23 +2,23 @@
 
 "use strict";
 
-var Trampoline = function (fn) {
-  this.tick = fn;
-};
-
 var run = function (t) {
-  while (t instanceof Trampoline) {
+  while (t.tick) {
     t = t.tick();
   };
   return t;
 };
 
-Trampoline.prototype.run = function () {
+var proto = {};
+
+proto.run = function () {
   return run(this);
 };
 
 var trampoline = function (fn) {
-  return new Trampoline (fn);
+  var result = Object.create (proto);
+  result.tick = fn;
+  return result;
 };
 
 module.exports = trampoline;
